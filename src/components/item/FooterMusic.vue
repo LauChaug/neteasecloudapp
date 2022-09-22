@@ -18,7 +18,7 @@
         <use xlink:href="#icon-yinleliebiao"></use>
       </svg>
     </div>
-    <audio ref="" :src="`https://music.163.com/song/media/outer/url?id=${playlist[playlistindex].id}.mp3`"></audio>
+    <audio ref="audio" :src="`https://music.163.com/song/media/outer/url?id=${playlist[playlistindex].id}.mp3`"></audio>
     <van-popup 
     v-model:show="detailShow" 
     position="right" 
@@ -32,6 +32,11 @@
   import { mapMutations, mapState } from 'vuex'
   import MusicDetail from '@/components/item/MusicDetail'
   export default {
+    data(){
+      return{
+        interVal:0
+      }
+    },
     components:{
       MusicDetail
     },
@@ -39,31 +44,43 @@
       ...mapState(['playlist','playlistindex','isBtnShow','detailShow'])
     },
     methods:{
-      ...mapMutations(['updateIsBtnShow','updateDetailShow']),
+      ...mapMutations(['updateIsBtnShow','updateDetailShow','updateCurrentTime']),
       playmusic(){
-        if(this.$refs[''].paused){
-          this.$refs[''].play()
+        if(this.$refs.audio.paused){
+          this.$refs.audio.play()
           this.updateIsBtnShow(false)
+          this.updateTime()
         }else{
-          this.$refs[''].pause()
+          this.$refs.audio.pause()
           this.updateIsBtnShow(true)
+          clearInterval(this.interVal)
         }
+      },
+      updateTime(){
+        this.interVal = setInterval(() => {
+          this.updateCurrentTime(this.$refs.audio.currentTime)
+        }, 500);
       }
     },
     watch:{
       playlistindex(){
-        this.$refs[''].autoplay = true
+        this.$refs.audio.autoplay = true
         this.updateIsBtnShow(false)
       },
       playlist(){
         if(this.isBtnShow){
-          this.$refs[''].autoplay = true
+          this.$refs.audio.autoplay = true
           this.updateIsBtnShow(false)
         }
       }
     },
+    updated(){
+      this.$store.dispatch('getLyric',this.playlist[this.playlistindex].id)
+      // console.log(this.playlist[this.playlistindex].id);
+    },
     mounted(){
-      console.log(this);
+      console.log(this.$refs);
+      this.$store.dispatch('getLyric',this.playlist[this.playlistindex].id)
     },
   }
 </script>

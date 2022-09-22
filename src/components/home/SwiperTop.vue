@@ -36,15 +36,15 @@
 
 <style lang="less">
 #swipTop{
-  position: relative;
   .van-swipe{
-    left: .16rem;
-    width: 96%;
-    // padding: 0 0.2rem;
+    width: 100%;
     .van-swipe__track{
+      width: 100%; 
       .van-swipe-item{
+        padding: 0 0.3rem;
+        width: 100%;
         img{
-          width: 96%;
+          width: 100%;
           height: 3rem;
           border-radius: .2rem;
         }

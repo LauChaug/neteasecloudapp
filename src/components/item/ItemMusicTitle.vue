@@ -15,8 +15,10 @@
         </svg>
       </div>
       <div class="signature">
-        <span>{{playlist.creator.signature}}</span>
-        <svg class="icon" aria-hidden="true">
+        <div class="test">
+          <div class="test_item">{{playlist.creator.signature}}</div>
+        </div>
+        <svg class="icon" aria-hidden="true" v-show="playlist.creator.signature">
           <use xlink:href="#icon-xiangyoujiantou"></use>
         </svg>
       </div>
@@ -83,10 +85,18 @@
       }
       .signature{
         width: 100%;
+        height: .4rem;
         color: rgb(216, 216, 216);
         display: flex;
-        span{
+        align-items: center;
+        .test{
           width: 90%;
+          height: 100%;
+          .test_item{
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
         }
       }
     }

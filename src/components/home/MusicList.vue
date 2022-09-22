@@ -127,6 +127,7 @@
           .icon {
             width: 0.3rem;
             height: 0.3rem;
+            fill: white;
           }
         }
         .name {
