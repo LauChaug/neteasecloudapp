@@ -6,15 +6,19 @@
       </svg>
     </div>
     <div class="topContent">
-      <span>我的</span>
+      <router-link to="/userinfo">
+        <span>我的</span>
+      </router-link>
       <span class="active">发现</span>
       <span>云村</span>
       <span>视频</span>
     </div>
     <div class="topRight">
-      <svg class="icon" aria-hidden="true">
-        <use xlink:href="#icon-sousuo"></use>
-      </svg>
+      <router-link :to="{path:'search'}">
+        <svg class="icon" aria-hidden="true">
+          <use xlink:href="#icon-sousuo"></use>
+        </svg>
+      </router-link>
     </div>
   </div>
 </template>

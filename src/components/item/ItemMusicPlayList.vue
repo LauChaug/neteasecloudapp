@@ -118,7 +118,7 @@ import { mapMutations } from 'vuex';
     }
     .itemlist{
       width: 100%;
-
+      margin-bottom: 1.4rem;
       .item{
         width: 100%;
         height: 1.4rem;

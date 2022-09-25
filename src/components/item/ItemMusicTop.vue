@@ -8,9 +8,11 @@
       <span>歌单</span>
     </div>
     <div class="itemright">
-      <svg class="icon" aria-hidden="true">
-        <use xlink:href="#icon-sousuo"></use>
-      </svg>
+      <router-link to="/search">
+        <svg class="icon" aria-hidden="true">
+          <use xlink:href="#icon-sousuo"></use>
+        </svg>
+      </router-link>
       <svg class="icon" aria-hidden="true">
         <use xlink:href="#icon-31liebiao"></use>
       </svg>

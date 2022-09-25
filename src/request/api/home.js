@@ -13,3 +13,24 @@ export function getMusicList(){
     url:'/personalized?limit=10'
   })
 }
+// 搜索
+export function getSearchMusic(data){
+  return service({
+    method:'GET',
+    url:`/cloudsearch?keywords=${data}`
+  })
+}
+//登录
+export function getPhoneLogin(data){
+  return service({
+    method:'GET',
+    url: `/login/cellphone?phone=${data.phone}&md5_password=${data.password}`
+  })
+}
+// 获取用户详情
+export function getUserDetail(data){
+  return service({
+    method:'GET',
+    url: `/user/detail?uid=${data}`
+  })
+}

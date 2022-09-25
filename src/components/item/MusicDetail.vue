@@ -3,7 +3,7 @@
   <div class="container">
     <div class="topCount">
       <div class="top-left">
-        <svg class="icon zuojiantou" aria-hidden="true" @click="updateDetailShow">
+        <svg class="icon zuojiantou" aria-hidden="true" @click="backHome">
           <use xlink:href="#icon-zuojiantou"></use>
         </svg>
         <div class="authorInfo">
@@ -26,13 +26,13 @@
         </svg>
       </div>
     </div>
-    <div class="middleContent" v-show="isLyricShow">
+    <div class="middleContent" @click="isLyricShow = true" v-show="!isLyricShow">
       <img src="@/assets/needle-ab.png" class="img_needle" :class="{img_needle_active:!isBtnShow}">
       <img src="@/assets/blackcircle.png" class="img_blackcircle">
       <img :src="musiclist.al.picUrl" class="img_al" :class="{img_al_active:!isBtnShow,img_al_paused:isBtnShow}">
     </div>
-    <div class="musicLyric">
-      <p v-for="(item,i) in lyric" :key="i" :class="{acitve:(currentTime*1000 >= item.time && currentTime*1000 < item.pre)}">
+    <div class="musicLyric" ref="musicLyric" @click="isLyricShow = false" v-show="isLyricShow">
+      <p v-for="(item,i) in lyric" :key="i" :class="{active:(currentTime*1000 >= item.time && currentTime*1000 < item.pre-100)}">
         {{item.lrc}}
       </p>
     </div>
@@ -55,13 +55,15 @@
         </svg>
       </div>
 
-      <div class="middleLin"></div>
+      <div class="middleLin">
+        <input type="range" class="range" min="0" :max="duration" step="0.05" v-model="currentTime">
+      </div>
 
       <div class="bottomIcons">
         <svg class="icon fanhui2x" aria-hidden="true">
           <use xlink:href="#icon-fanhui2x"></use>
         </svg>
-        <svg class="icon shangyiqu" aria-hidden="true">
+        <svg class="icon shangyiqu" aria-hidden="true" @click="switchSong(-1)">
           <use xlink:href="#icon-shangyiqu"></use>
         </svg>
         <svg class="icon bofang2" aria-hidden="true" @click="playmusic" v-if="isBtnShow">
@@ -70,7 +72,7 @@
         <svg class="icon bofang2" aria-hidden="true" @click="playmusic" v-else>
           <use xlink:href="#icon-bofang1"></use>
         </svg>
-        <svg class="icon xiayiqu" aria-hidden="true">
+        <svg class="icon xiayiqu" aria-hidden="true" @click="switchSong(+1)">
           <use xlink:href="#icon-xiayiqu"></use>
         </svg>
         <svg class="icon liebiao" aria-hidden="true">
@@ -91,12 +93,12 @@
         isLyricShow: false
       }
     },
-    props:['musiclist','playmusic','isBtnShow'],
+    props:['musiclist','playmusic','isBtnShow','addDuration'],
     components:{
       Vue3Marquee
     },
     computed:{
-      ...mapState(['lyricList','currentTime']),
+      ...mapState(['lyricList','currentTime','playlistindex','playlist','duration']),
       lyric(){
         let arr
         if(this.lyricList.lyric){
@@ -117,8 +119,8 @@
           })
           // console.log(arr);
           arr.forEach((item,i) => {
-            if (i === arr.length-1) {
-              item.pre = 0
+            if (i === arr.length-1 || isNaN(arr[i+1].time)) {
+              item.pre = 100000
             }else{
               item.pre = arr[i + 1].time
             }
@@ -129,9 +131,40 @@
       }
     },
     methods:{
-      ...mapMutations(['updateDetailShow'])
+      ...mapMutations(['updateDetailShow','updateplaylistindex']),
+      backHome(){
+        this.updateDetailShow()
+        this.isLyricShow = false
+      },
+      switchSong(num){
+        let index = this.playlistindex+num
+        if(index < 0){
+          index = this.playlist.length - 1
+        }else if(index == this.playlist.length){
+          index = 0
+        }
+        this.updateplaylistindex(index)
+      }
+    },
+    watch:{
+      currentTime(newValue){
+        let p = document.querySelector("p.active")
+        if(p){
+          if(p.offsetTop > 260){
+            this.$refs.musicLyric.scrollTop = p.offsetTop - 260
+          }
+        }
+        if(newValue === this.duration){
+          if(this.playlistindex === this.playlist.length-1){
+            this.updateplaylistindex(0)
+          }else{
+            this.updateplaylistindex(this.playlistindex + 1)
+          }
+        }
+      }
     },
     mounted(){
+      this.addDuration()
     }
   }
 </script>
@@ -185,7 +218,7 @@
       width: 100%;
       height: 9rem;
       position: relative;
-      background-color: aqua;
+      // background-color: aqua;
       .img_needle{
         height: 3rem;
         position: absolute;
@@ -250,11 +283,11 @@
       overflow: scroll;
       p{
         color: rgb(185, 185, 185);
-        margin-bottom: .1rem;
+        margin-bottom: .25rem;
         font-size: .35rem;
         font-weight: 500;
       }
-      .acitve{
+      .active{
         color: white;
         font-size: .4rem;
       }
@@ -283,7 +316,12 @@
           height: .82rem;
         }
       }
-      .middleLin{}
+      .middleLin{
+        .range{
+          width: 100%;
+          height: .06rem;
+        }
+      }
       .bottomIcons{
         width: 100%;
         height: 1rem;

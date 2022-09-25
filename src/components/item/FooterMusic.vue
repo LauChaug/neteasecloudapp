@@ -23,7 +23,12 @@
     v-model:show="detailShow" 
     position="right" 
     :style="{ height: '100%',width: '100%' }">
-      <MusicDetail :musiclist="playlist[playlistindex]" :playmusic="playmusic" :isBtnShow="isBtnShow"/>
+      <MusicDetail 
+      :musiclist="playlist[playlistindex]" 
+      :playmusic="playmusic" 
+      :isBtnShow="isBtnShow"
+      :addDuration="addDuration"
+      />
     </van-popup>
   </div>
 </template>
@@ -44,7 +49,7 @@
       ...mapState(['playlist','playlistindex','isBtnShow','detailShow'])
     },
     methods:{
-      ...mapMutations(['updateIsBtnShow','updateDetailShow','updateCurrentTime']),
+      ...mapMutations(['updateIsBtnShow','updateDetailShow','updateCurrentTime','updateDuration']),
       playmusic(){
         if(this.$refs.audio.paused){
           this.$refs.audio.play()
@@ -55,6 +60,9 @@
           this.updateIsBtnShow(true)
           clearInterval(this.interVal)
         }
+      },
+      addDuration(){
+        this.updateDuration(this.$refs.audio.duration)
       },
       updateTime(){
         this.interVal = setInterval(() => {
@@ -75,6 +83,7 @@
       }
     },
     updated(){
+      this.addDuration()
       this.$store.dispatch('getLyric',this.playlist[this.playlistindex].id)
       // console.log(this.playlist[this.playlistindex].id);
     },

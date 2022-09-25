@@ -1,5 +1,6 @@
 import { createStore } from 'vuex'
 import { getMusicLyric } from "@/request/api/item";
+import { getPhoneLogin } from "@/request/api/home";
 
 export default createStore({
   state: {
@@ -13,7 +14,7 @@ export default createStore({
           pic_str: "109951165992420035"
         },
         id: 29343374,
-        ar:[
+        ar: [
           {
             name:"张国荣"
           }
@@ -24,14 +25,22 @@ export default createStore({
     playlistindex: 0, //默认下标为0
     isBtnShow: true,
     detailShow: false,
-    lyricList:{}, 
-    currentTime:0
+    lyricList: {}, 
+    currentTime: 0,
+    duration: 0,
+    isLogin: false,
+    isFooterMusic: true,
+    token: '',
+    user: '',
   },
   getters: {
   },
   mutations: {
     updateIsBtnShow(state,value){
       state.isBtnShow = value
+    },
+    pushPlaylist(state,value){
+      state.playlist.push(value)
     },
     updatePlayList(state,value){
       state.playlist = value
@@ -49,8 +58,23 @@ export default createStore({
       console.log(state.lyricList);
     },
     updateCurrentTime(state,value){
-      console.log(state.currentTime);
+      // console.log(state.currentTime);
       state.currentTime = value
+    },
+    updateDuration(state,value){
+      console.log(state.duration);
+      state.duration = value
+      console.log(state.duration);
+    },
+
+    updateIsLogin(state,value){
+      state.isLogin = value
+    },
+    updateToken(state,value){
+      state.token = value 
+    },
+    updateUser(state,value){
+      state.user = value
     }
   },
   actions: {
@@ -58,6 +82,10 @@ export default createStore({
       const {data:res} = await getMusicLyric(value)
       console.log(res);
       context.commit('updateLyricList',res.lrc)
+    },
+    async getLogin(context,value){
+     const res = await getPhoneLogin(value)
+     return res
     }
   },
   modules: {

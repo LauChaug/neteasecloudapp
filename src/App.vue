@@ -1,14 +1,18 @@
 <template>
   <router-view/>
-  <FooterMusic></FooterMusic>
+  <FooterMusic v-show="isFooterMusic"></FooterMusic>
 </template>
 
 <script>
   import FooterMusic from '@/components/item/FooterMusic'
+import { mapState } from 'vuex'
   export default{
     components:[
       FooterMusic
-    ]
+    ],
+    computed:{
+      ...mapState(['isFooterMusic'])
+    }
   }
 </script>
 
